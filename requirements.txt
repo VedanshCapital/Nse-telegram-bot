@@ -2,3 +2,5 @@ pyTelegramBotAPI
 yfinance
 pillow
 requests
+flask
+gunicorn
