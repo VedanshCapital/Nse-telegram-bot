@@ -108,7 +108,7 @@ def generate_advanced_dashboard():
     draw.line([(0, 140), (1000, 140)], fill="#4CAF50", width=4)
 
     # --- PANEL 1: 1. MARKET SNAPSHOT (Left Column) ---
-    draw.rectangle([(30, 170), (480, 580)], fill=PANEL_BG, radius=8)
+    draw.rounded_rectangle([(30, 170), (480, 580)], radius=8, fill=PANEL_BG)
     draw.text((50, 190), "1. MARKET SNAPSHOT", fill="#4CAF50", font=header_font)
     draw.text((50, 230), "Index", fill=MUTED, font=sub_font)
     draw.text((210, 230), "Price", fill=MUTED, font=sub_font)
@@ -135,7 +135,7 @@ def generate_advanced_dashboard():
         y_offset += 42
 
     # --- PANEL 2: 2. SECTOR PERFORMANCE (Right Column) ---
-    draw.rectangle([(510, 170), (960, 680)], fill=PANEL_BG, radius=8)
+    draw.rounded_rectangle([(510, 170), (960, 680)], radius=8, fill=PANEL_BG)
     draw.text((530, 190), "2. SECTOR PERFORMANCE (%)", fill="#4CAF50", font=header_font)
     
     y_offset = 240
@@ -147,7 +147,7 @@ def generate_advanced_dashboard():
         y_offset += 42
 
     # --- PANEL 3: VOLATILITY & BREADTH (Bottom Left) ---
-    draw.rectangle([(30, 610), (480, 780)], fill=PANEL_BG, radius=8)
+    draw.rounded_rectangle([(30, 610), (480, 780)], radius=8, fill=PANEL_BG)
     draw.text((50, 630), "VOLATILITY & BREADTH", fill=MUTED, font=header_font)
     draw.text((50, 680), "India VIX", fill=WHITE, font=data_font)
     draw.text((180, 680), vix_p, fill=WHITE, font=data_font)
@@ -156,7 +156,7 @@ def generate_advanced_dashboard():
     draw.text((50, 730), "Advances: 1,223   |   Declines: 1,064   |   A/D Ratio: 1.15", fill=MUTED, font=sub_font)
 
     # --- PANEL 4: 8 & 9. COMMODITIES & FOREX (Bottom Right) ---
-    draw.rectangle([(510, 710), (960, 900)], fill=PANEL_BG, radius=8)
+    draw.rounded_rectangle([(510, 710), (960, 900)], radius=8, fill=PANEL_BG)
     draw.text((530, 730), "3. CURRENCY & COMMODITIES", fill="#4CAF50", font=header_font)
     
     draw.text((530, 780), f"USD/INR: {usdinr_p} ({usdinr_pct})", fill=WHITE, font=data_font)
@@ -165,7 +165,7 @@ def generate_advanced_dashboard():
     draw.text((750, 830), f"Silver (1kg): {silver_p}", fill=WHITE, font=data_font)
 
     # --- PANEL 5: DYNAMIC WATCHLIST / RADAR MATRIX ---
-    draw.rectangle([(30, 930), (960, 1330)], fill=PANEL_BG, radius=8)
+    draw.rounded_rectangle([(30, 930), (960, 1330)], radius=8, fill=PANEL_BG)
     draw.text((50, 950), "4. SECTOR RADAR & OPTION ZONE", fill="#4CAF50", font=header_font)
     
     radar_insights = [
