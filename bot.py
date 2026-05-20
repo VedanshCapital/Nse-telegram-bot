@@ -26,7 +26,6 @@ bot = telebot.TeleBot(BOT_TOKEN)
 FONT_FILE = "LiberationSans-Bold.ttf"
 if not os.path.exists(FONT_FILE):
     try:
-        # Pulling stable open-source typeface straight to the container to prevent tiny fallback text
         r = requests.get("https://github.com/liberationfonts/liberation-fonts/raw/master/LiberationSans-Bold.ttf", timeout=15)
         with open(FONT_FILE, "wb") as f:
             f.write(r.content)
@@ -35,7 +34,10 @@ if not os.path.exists(FONT_FILE):
 
 def grab_font(size_px):
     if FONT_FILE:
-        return ImageFont.truetype(FONT_FILE, size_px)
+        try:
+            return ImageFont.truetype(FONT_FILE, size_px)
+        except:
+            pass
     return ImageFont.load_default()
 
 # --- FINANCIAL BACKEND SCRAPER ---
@@ -63,7 +65,7 @@ def fetch_ticker_packet(symbol, precision=2, lead_symbol="", tail_symbol=""):
 # --- COLUMN GRID CALIBRATION ENGINE ---
 def place_table_row(draw, start_x, current_y, label, price, variation, percent, is_green, font_set, color_main, color_g, color_r):
     accent_color = color_g if is_green else color_r
-    # Explicit pixel anchors to completely prevent text from shifting or squishing to the left
+    # Explicit pixel anchors to ensure alignment across multiple devices
     draw.text((start_x + 20, current_y), str(label), fill=color_main, font=font_set)
     draw.text((start_x + 200, current_y), str(price), fill=color_main, font=font_set)
     if variation:
@@ -101,7 +103,7 @@ def build_high_vis_dashboard():
     canvas = Image.new("RGB", (1550, 3250), "#F4F6F9")
     ctx = ImageDraw.Draw(canvas)
     
-    # Scale allocations to ensure readability on high DPI mobile viewports
+    # Scale allocations to maximize readability
     f_mega = grab_font(58)
     f_title = grab_font(30)
     f_body = grab_font(21)
