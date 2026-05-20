@@ -5,7 +5,8 @@ import yfinance as yf
 from PIL import Image, ImageDraw, ImageFont
 
 # 1. Initialize Bot
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN_HERE"  # <-- Replace with your BotFather Token
+BOT_TOKEN = HTTP API:
+8793559199:AAHGpMK_IB7AIvcZeHptk_HmCQBYJkCpRzg
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Helper function to pull live stock data safely
