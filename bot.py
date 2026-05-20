@@ -11,7 +11,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "Complete 16-Panel Engine Running"
+    return "High-Readability 16-Panel Engine Running"
 
 def run_web_server():
     app.run(host='0.0.0.0', port=8080)
@@ -20,7 +20,7 @@ def run_web_server():
 BOT_TOKEN = "8793559199:AAHGpMK_IB7AIvcZeHptk_HmCQBYJkCpRzg"
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# Clean, safe data scraper mapping live metrics to dashboard blocks
+# Stable financial data fallback scraper
 def pull_tick(symbol, decimals=2, prefix="", suffix=""):
     try:
         t = yf.Ticker(symbol)
@@ -42,14 +42,14 @@ def pull_tick(symbol, decimals=2, prefix="", suffix=""):
     except:
         return "N/A", "0.00", "0.00%", True
 
-# Helper to draw clean table rows
+# Safe row drawing helper with proper vertical spacing and readable colors
 def draw_table_row(draw, x, y, label, val, chg, pct, is_pos, font, text_color, g_color, r_color):
     draw.text((x, y), label, fill=text_color, font=font)
-    draw.text((x + 140, y), val, fill=text_color, font=font)
+    draw.text((x + 160, y), val, fill=text_color, font=font)
     c_color = g_color if is_pos else r_color
     if chg:
-        draw.text((x + 240, y), chg, fill=c_color, font=font)
-    draw.text((x + 310, y), pct, fill=c_color, font=font)
+        draw.text((x + 280, y), chg, fill=c_color, font=font)
+    draw.text((x + 370, y), pct, fill=c_color, font=font)
 
 # --- HIGH RESOLUTION CANVAS ARCHITECT ---
 def compile_massive_dashboard():
@@ -79,193 +79,196 @@ def compile_massive_dashboard():
     copper = pull_tick("HG=F", decimals=1, prefix="₹")
     usdinr = pull_tick("INR=X", decimals=4, prefix="₹")
 
-    # Canvas Construction (Expanded to 1200x2950 to perfectly hold all 16 sections)
-    img = Image.new("RGB", (1200, 2950), "#F4F5F7")
+    # High-contrast canvas layout (Large dimensions prevent text overlapping)
+    img = Image.new("RGB", (1300, 3100), "#F4F6F9")
     draw = ImageDraw.Draw(img)
     
     try:
-        f_title = ImageFont.truetype("arial.ttf", 44)
-        f_head = ImageFont.truetype("arial.ttf", 18)
-        f_data = ImageFont.truetype("arial.ttf", 15)
-        f_sub = ImageFont.truetype("arial.ttf", 13)
+        f_title = ImageFont.truetype("arial.ttf", 46)
+        f_head = ImageFont.truetype("arial.ttf", 20)
+        f_data = ImageFont.truetype("arial.ttf", 17)
+        f_sub = ImageFont.truetype("arial.ttf", 15)
     except:
         f_title = f_head = f_data = f_sub = ImageFont.load_default()
 
-    # Brand Colors
-    NAVY = "#09121F"
-    GREEN = "#00875A"
-    RED = "#DE350B"
-    TEXT_DARK = "#172B4D"
-    BORDER_CLR = "#DFE1E6"
+    # Exact Color Palette from Reference Image
+    NAVY = "#0B1A30"       # High contrast header blocks
+    GREEN = "#00875A"      # Clean positive indicator green
+    RED = "#DE350B"        # Clean negative indicator red
+    TEXT_DARK = "#172B4D"  # Main text color for white cards
+    BORDER_CLR = "#DCDFE4" # Subdued boundaries
     MUTED = "#5E6C84"
 
-    # --- TOP HEADER ---
-    draw.rectangle([(0, 0), (1200, 140)], fill="#FFFFFF")
+    # --- MAIN ENGINE TOP HEADER ---
+    draw.rectangle([(0, 0), (1300, 150)], fill="#FFFFFF")
     draw.text((40, 25), "ARTHARION CAPITAL", fill=NAVY, font=f_title)
-    draw.text((45, 85), "DECODE MARKET", fill=GREEN, font=f_head)
-    current_date = datetime.datetime.now().strftime("%1d %b %Y | %I:%M %p")
-    draw.text((880, 55), current_date, fill=TEXT_DARK, font=f_head)
-    draw.line([(0, 140), (1200, 140)], fill=NAVY, width=3)
+    draw.text((45, 90), "DECODE MARKET", fill=GREEN, font=f_head)
+    current_date = datetime.datetime.now().strftime("%d %b %Y | %I:%M %p")
+    draw.text((950, 60), current_date, fill=TEXT_DARK, font=f_head)
+    draw.line([(0, 150), (1300, 150)], fill=NAVY, width=4)
 
-    # --- ROW 1: 1, 2, 3 ---
+    # --- ROW 1: CARDS 1, 2, 3 ---
     # 1. MARKET SNAPSHOT
-    draw.rectangle([(25, 160), (390, 700)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(25, 160), (390, 195)], fill=NAVY)
-    draw.text((40, 168), "1. MARKET SNAPSHOT", fill="#FFFFFF", font=f_head)
+    draw.rectangle([(25, 170), (430, 720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(25, 170), (430, 210)], fill=NAVY)
+    draw.text((40, 180), "1. MARKET SNAPSHOT", fill="#FFFFFF", font=f_head)
     snap_data = [("Nifty 50", n50), ("Sensex", sen), ("Bank Nifty", bnk), ("Nifty Next 50", n_mid), ("Nifty 100", n100), ("Nifty 200", n200), ("Nifty 500", n500)]
-    y = 215
+    y = 230
     for name, metric in snap_data:
         draw_table_row(draw, 40, y, name, metric[0], metric[1], metric[2], metric[3], f_data, TEXT_DARK, GREEN, RED)
-        y += 42
-    # Volatility and Breadth (part of Square 1)
-    draw.rectangle([(25, 520), (390, 550)], fill=NAVY)
-    draw.text((40, 528), "VOLATILITY & BREADTH", fill="#FFFFFF", font=f_sub)
-    draw.text((40, 565), "India VIX\n18.79 (+0.97%)", fill=TEXT_DARK, font=f_sub)
-    draw.text((160, 565), "Advances\n177", fill=GREEN, font=f_sub)
-    draw.text((250, 565), "Declines\n322", fill=RED, font=f_sub)
-    draw.text((330, 565), "A/D\n0.55", fill=TEXT_DARK, font=f_sub)
+        y += 45
+        
+    # Volatility and Breadth (Embedded inside Snapshot block)
+    draw.rectangle([(25, 550), (430, 585)], fill=NAVY)
+    draw.text((40, 558), "VOLATILITY & BREADTH", fill="#FFFFFF", font=f_sub)
+    draw.text((40, 605), "India VIX\n18.79 (+0.97%)", fill=TEXT_DARK, font=f_sub)
+    draw.text((180, 605), "Advances\n177", fill=GREEN, font=f_sub)
+    draw.text((270, 605), "Declines\n322", fill=RED, font=f_sub)
+    draw.text((360, 605), "A/D\n0.55", fill=TEXT_DARK, font=f_sub)
 
     # 2. SECTOR PERFORMANCE
-    draw.rectangle([(410, 160), (790, 700)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(410, 160), (790, 195)], fill=NAVY)
-    draw.text((425, 168), "2. SECTOR PERFORMANCE (%)", fill="#FFFFFF", font=f_head)
+    draw.rectangle([(450, 170), (850, 720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(450, 170), (850, 210)], fill=NAVY)
+    draw.text((465, 180), "2. SECTOR PERFORMANCE (%)", fill="#FFFFFF", font=f_head)
     sectors_list = [
         ("Nifty Media", "+1.98%", True), ("Nifty IT", "+1.30%", True), ("Nifty FMCG", "+0.54%", True),
         ("Nifty Pharma", "+0.34%", True), ("Nifty Auto", "+0.08%", True), ("Nifty Consumption", "-0.04%", False),
         ("Nifty Infra", "-0.44%", False), ("Nifty Energy", "-0.66%", False), ("Nifty Bank", "-0.77%", False),
         ("Nifty Realty", "-1.79%", False), ("Nifty PSU Bank", "-1.80%", False), ("Nifty Metal", "-1.93%", False)
     ]
-    y = 210
+    y = 225
     for name, pct, pos in sectors_list:
-        draw.text((425, y), name, fill=TEXT_DARK, font=f_data)
-        draw.text((720, y), pct, fill=GREEN if pos else RED, font=f_data)
-        y += 38
+        draw.text((465, y), name, fill=TEXT_DARK, font=f_data)
+        draw.text((750, y), pct, fill=GREEN if pos else RED, font=f_data)
+        y += 40
 
     # 3. GLOBAL MARKETS
-    draw.rectangle([(810, 160), (1175, 700)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(810, 160), (1175, 195)], fill=NAVY)
-    draw.text((825, 168), "3. GLOBAL MARKETS", fill="#FFFFFF", font=f_head)
+    draw.rectangle([(870, 170), (1275, 720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(870, 170), (1275, 210)], fill=NAVY)
+    draw.text((885, 180), "3. GLOBAL MARKETS", fill="#FFFFFF", font=f_head)
     global_layout = [("S&P 500", sp500), ("Nasdaq 100", nasdaq), ("Dow Jones", dow), ("FTSE 100", ftse), ("DAX", dax), ("CAC 40", cac), ("Nikkei 225", nikkei), ("Hang Seng", hangseng), ("KOSPI", kospi)]
-    y = 215
+    y = 230
     for name, metric in global_layout:
-        draw.text((825, y), name, fill=TEXT_DARK, font=f_data)
-        draw.text((1080, y), metric[2], fill=GREEN if metric[3] else RED, font=f_data)
-        y += 50
+        draw.text((885, y), name, fill=TEXT_DARK, font=f_data)
+        draw.text((1160, y), metric[2], fill=GREEN if metric[3] else RED, font=f_data)
+        y += 52
 
-    # --- ROW 2: 4, 5, 6, 7 ---
+    # --- ROW 2: CARDS 4, 5, 6, 7 ---
     # 4. TOP GAINERS
-    draw.rectangle([(25, 720), (300, 1030)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(25, 720), (300, 755)], fill=NAVY)
-    draw.text((35, 728), "4. TOP GAINERS", fill="#FFFFFF", font=f_sub)
+    draw.rectangle([(25, 740), (320, 1070)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(25, 740), (320, 775)], fill=NAVY)
+    draw.text((35, 748), "4. TOP GAINERS", fill="#FFFFFF", font=f_sub)
     gainers = [("KIRLOSENG", "₹1,743", "+9.17%"), ("CARBONUNIV", "₹1,105", "+6.52%"), ("CHAMBLFERT", "₹452.25", "+6.51%"), ("JPPOWER", "₹18.95", "+6.10%"), ("VIJAYA", "₹1,344", "+5.84%")]
-    y = 770
+    y = 790
     for stock, val, chg in gainers:
-        draw.text((35, y), f"{stock}  {val}  {chg}", fill=GREEN, font=f_sub)
-        y += 45
+        draw.text((35, y), f"{stock}\n{val} ({chg})", fill=GREEN, font=f_sub)
+        y += 52
 
     # 5. TOP LOSERS
-    draw.rectangle([(315, 720), (590, 1030)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(315, 720), (590, 755)], fill=NAVY)
-    draw.text((325, 728), "5. TOP LOSERS", fill="#FFFFFF", font=f_sub)
+    draw.rectangle([(340, 740), (635, 1070)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(340, 740), (635, 775)], fill=NAVY)
+    draw.text((350, 748), "5. TOP LOSERS", fill="#FFFFFF", font=f_sub)
     losers = [("NAVA", "₹626", "-11.03%"), ("HUDCO", "₹205.90", "-7.81%"), ("MUTHOOTFIN", "₹3,309", "-6.29%"), ("CLEAN", "₹767", "-6.23%"), ("HINDCOPPER", "₹573.40", "-5.45%")]
-    y = 770
+    y = 790
     for stock, val, chg in losers:
-        draw.text((325, y), f"{stock}  {val}  {chg}", fill=RED, font=f_sub)
-        y += 45
+        draw.text((350, y), f"{stock}\n{val} ({chg})", fill=RED, font=f_sub)
+        y += 52
 
     # 6. MOMENTUM RADAR
-    draw.rectangle([(605, 720), (880, 1030)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(605, 720), (880, 755)], fill=NAVY)
-    draw.text((615, 728), "6. MOMENTUM RADAR", fill="#FFFFFF", font=f_sub)
+    draw.rectangle([(655, 740), (950, 1070)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(655, 740), (950, 775)], fill=NAVY)
+    draw.text((665, 748), "6. MOMENTUM RADAR", fill="#FFFFFF", font=f_sub)
     radar = [("OIL", "₹518.80", "+14.24%"), ("BIOCON", "₹430.40", "+12.99%")]
-    y = 770
+    y = 790
     for stock, val, chg in radar:
-        draw.text((615, y), f"{stock}  {val}  {chg}", fill=GREEN, font=f_sub)
-        y += 45
+        draw.text((665, y), f"{stock}\n{val} ({chg})", fill=GREEN, font=f_sub)
+        y += 55
 
     # 7. SECTORS TO WATCH
-    draw.rectangle([(895, 720), (1175, 1030)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(895, 720), (1175, 755)], fill=NAVY)
-    draw.text((905, 728), "7. SECTORS TO WATCH", fill="#FFFFFF", font=f_sub)
-    draw.text((905, 770), "POSITIVE:\n• Pharma, Media\n• Defence, Oil & Gas", fill=GREEN, font=f_sub)
-    draw.text((905, 870), "NEGATIVE:\n• Metals, PSU Banks\n• IT, Realty", fill=RED, font=f_sub)
+    draw.rectangle([(970, 740), (1275, 1070)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(970, 740), (1275, 775)], fill=NAVY)
+    draw.text((980, 748), "7. SECTORS TO WATCH", fill="#FFFFFF", font=f_sub)
+    draw.text((980, 790), "POSITIVE:\n• Pharma, Media\n• Defence, Oil & Gas", fill=GREEN, font=f_sub)
+    draw.text((980, 895), "NEGATIVE:\n• Metals, PSU Banks\n• IT, Realty", fill=RED, font=f_sub)
 
-    # --- ROW 3: 8, 9, 10 ---
+    # --- ROW 3: CARDS 8, 9, 10 ---
     # 8. COMMODITIES
-    draw.rectangle([(25, 1050), (390, 1340)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(25, 1050), (390, 1085)], fill=NAVY)
-    draw.text((40, 1058), "8. COMMODITIES", fill="#FFFFFF", font=f_head)
+    draw.rectangle([(25, 1090), (430, 1390)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(25, 1090), (430, 1125)], fill=NAVY)
+    draw.text((40, 1098), "8. COMMODITIES", fill="#FFFFFF", font=f_head)
     comms_data = [("Gold (10g)", gold), ("Silver (1kg)", silver), ("Crude Oil", crude), ("Natural Gas", natgas), ("Copper", copper)]
-    y = 1105
+    y = 1145
     for name, metric in comms_data:
         draw_table_row(draw, 40, y, name, metric[0], metric[1], metric[2], metric[3], f_sub, TEXT_DARK, GREEN, RED)
-        y += 44
+        y += 46
 
     # 9. CURRENCY & BONDS
-    draw.rectangle([(410, 1050), (790, 1340)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(410, 1050), (790, 1085)], fill=NAVY)
-    draw.text((425, 1058), "9. CURRENCY & BONDS", fill="#FFFFFF", font=f_head)
-    draw.text((425, 1110), f"USD/INR: {usdinr[0]} ({usdinr[2]})", fill=TEXT_DARK, font=f_data)
-    draw.text((425, 1150), "India 10Y: 7.076% (+6 bps)\nIndia 5Y: 6.898% (+10 bps)\nIndia 2Y: 6.473% (+9 bps)", fill=TEXT_DARK, font=f_sub)
-    draw.text((425, 1240), "US 10Y: 4.470% (+1 bps)\nUS 2Y: 4.000% (+2 bps)", fill=MUTED, font=f_sub)
+    draw.rectangle([(450, 1090), (850, 1390)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(450, 1090), (850, 1125)], fill=NAVY)
+    draw.text((465, 1098), "9. CURRENCY & BONDS", fill="#FFFFFF", font=f_head)
+    draw.text((465, 1145), f"USD/INR: {usdinr[0]} ({usdinr[2]})", fill=TEXT_DARK, font=f_data)
+    draw.text((465, 1185), "India 10Y: 7.076% (+6 bps)\nIndia 5Y: 6.898% (+10 bps)\nIndia 2Y: 6.473% (+9 bps)", fill=TEXT_DARK, font=f_sub)
+    draw.text((465, 1285), "US 10Y: 4.470% (+1 bps)\nUS 2Y: 4.000% (+2 bps)", fill=MUTED, font=f_sub)
 
     # 10. FII / DII FLOWS
-    draw.rectangle([(810, 1050), (1175, 1340)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(810, 1050), (1175, 1085)], fill=NAVY)
-    draw.text((825, 1058), "10. FII / DII FLOWS (Cr)", fill="#FFFFFF", font=f_head)
-    draw.text((825, 1120), "FII Net: +187 Cr\nDII Net: +684 Cr\n\nCOMBINED NET FLOW\n+872 Cr", fill=GREEN, font=f_head)
+    draw.rectangle([(870, 1090), (1275, 1390)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(870, 1090), (1275, 1125)], fill=NAVY)
+    draw.text((885, 1098), "10. FII / DII FLOWS (Cr)", fill="#FFFFFF", font=f_head)
+    draw.text((885, 1150), "FII Net Session: +187 Cr\nDII Net Session: +684 Cr\n\nCOMBINED SESSION FLOW:\n+872 Cr", fill=GREEN, font=f_head)
 
-    # --- ROW 4: 11, 12, 13 ---
+    # --- ROW 4: CARDS 11, 12, 13 ---
     # 11. OI DATA (NIFTY)
-    draw.rectangle([(25, 1360), (390, 1720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(25, 1360), (390, 1395)], fill=NAVY)
-    draw.text((40, 1368), "11. OI DATA (NIFTY)", fill="#FFFFFF", font=f_head)
-    draw.text((40, 1420), "RESISTANCE (CALL OI):\n• 24,000 (65.80 L)\n• 23,800 (48.30 L)", fill=RED, font=f_sub)
-    draw.text((40, 1540), "SUPPORT (PUT OI):\n• 23,500 (62.40 L)\n• 23,400 (45.10 L)", fill=GREEN, font=f_sub)
-    draw.text((40, 1660), "IMPORTANT ZONE: 23,800 - 23,900", fill=TEXT_DARK, font=f_sub)
+    draw.rectangle([(25, 1410), (430, 1780)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(25, 1410), (430, 1445)], fill=NAVY)
+    draw.text((40, 1418), "11. OI DATA (NIFTY)", fill="#FFFFFF", font=f_head)
+    draw.text((40, 1465), "RESISTANCE (CALL OI):\n• 24,000 (65.80 L)\n• 23,800 (48.30 L)", fill=RED, font=f_sub)
+    draw.text((40, 1585), "SUPPORT (PUT OI):\n• 23,500 (62.40 L)\n• 23,400 (45.10 L)", fill=GREEN, font=f_sub)
+    draw.text((40, 1715), "IMPORTANT ZONE: 23,800 - 23,900", fill=TEXT_DARK, font=f_sub)
 
     # 12. ALPHA RADAR
-    draw.rectangle([(410, 1360), (790, 1720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(410, 1360), (790, 1395)], fill=NAVY)
-    draw.text((425, 1368), "12. ALPHA RADAR", fill="#FFFFFF", font=f_head)
-    draw.text((425, 1420), "BULLISH THEMES:\n• Pharma: Buying continues\n• Media: Strong momentum", fill=GREEN, font=f_sub)
-    draw.text((425, 1560), "WEAK THEMES:\n• Metals: Profit booking\n• IT: Sector under pressure", fill=RED, font=f_sub)
+    draw.rectangle([(450, 1410), (850, 1780)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(450, 1410), (850, 1445)], fill=NAVY)
+    draw.text((465, 1418), "12. ALPHA RADAR", fill="#FFFFFF", font=f_head)
+    draw.text((465, 1465), "BULLISH THEMES:\n• Pharma: Defensive buying continues\n• Media: Strong sector momentum\n• Defence: UAE investment boost", fill=GREEN, font=f_sub)
+    draw.text((465, 1615), "WEAK THEMES:\n• Metals: Profit booking after rally\n• PSU Banks: Weakness continues\n• IT: Sector under pressure", fill=RED, font=f_sub)
 
-    # 13. HEAT MAP (renamed to slot 13 layout box)
-    draw.rectangle([(810, 1360), (1175, 1720)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(810, 1360), (1175, 1395)], fill=NAVY)
-    draw.text((825, 1368), "13. HEAT MAP MATRIX", fill="#FFFFFF", font=f_head)
-    draw.rectangle([(830, 1420), (990, 1520)], fill="#E8F5E9")
-    draw.text((840, 1440), "OIL\n+2.93%", fill=GREEN, font=f_sub)
-    draw.rectangle([(1000, 1420), (1160, 1520)], fill="#E8F5E9")
-    draw.text((1010, 1440), "BIOCON\n+2.72%", fill=GREEN, font=f_sub)
-    draw.rectangle([(830, 1540), (990, 1640)], fill="#FFEBEE")
-    draw.text((840, 1560), "NAVA\n-11.03%", fill=RED, font=f_sub)
-    draw.rectangle([(1000, 1540), (1160, 1640)], fill="#E3F2FD")
-    draw.text((1010, 1560), "IT\n+1.30%", fill=TEXT_DARK, font=f_sub)
+    # 13. HEAT MAP MATRIX
+    draw.rectangle([(870, 1410), (1275, 1780)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(870, 1410), (1275, 1445)], fill=NAVY)
+    draw.text((885, 1418), "13. HEAT MAP MATRIX", fill="#FFFFFF", font=f_head)
+    
+    # 4 distinct internal blocks with fallback border drawing instead of radius
+    draw.rectangle([(885, 1465), (1060, 1565)], fill="#E8F5E9")
+    draw.text((895, 1490), "OIL\n+2.93%", fill=GREEN, font=f_sub)
+    draw.rectangle([(1080, 1465), (1255, 1565)], fill="#E8F5E9")
+    draw.text((1090, 1490), "BIOCON\n+2.72%", fill=GREEN, font=f_sub)
+    draw.rectangle([(885, 1585), (1060, 1685)], fill="#FFEBEE")
+    draw.text((895, 1610), "NAVA\n-11.03%", fill=RED, font=f_sub)
+    draw.rectangle([(1080, 1585), (1255, 1685)], fill="#E3F2FD")
+    draw.text((1090, 1610), "IT CLUSTER\n+1.30%", fill=TEXT_DARK, font=f_sub)
 
-    # --- ROW 5: 14, 15, 16 ---
+    # --- ROW 5: CARDS 14, 15, 16 ---
     # 14. MAJOR NEWS
-    draw.rectangle([(25, 1740), (500, 2150)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(25, 1740), (500, 1775)], fill=NAVY)
-    draw.text((40, 1748), "14. MAJOR NEWS", fill="#FFFFFF", font=f_head)
-    draw.text((40, 1800), "INDIA NEWS:\n• Petrol & Diesel prices hiked by ₹3 per litre.\n• India's exports rise 13.8% YoY to $43.56B.\n\nGLOBAL NEWS:\n• WTI crude futures steady above $104/bbl.\n• Rising US Inflation concerns pressure metals.", fill=TEXT_DARK, font=f_sub)
+    draw.rectangle([(25, 1800), (520, 2220)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(25, 1800), (520, 1835)], fill=NAVY)
+    draw.text((40, 1808), "14. MAJOR NEWS", fill="#FFFFFF", font=f_head)
+    draw.text((40, 1855), "INDIA NEWS:\n• Petrol & Diesel prices hiked by ₹3 per litre.\n• India's exports rise 13.8% YoY to $43.56B.\n\nGLOBAL NEWS:\n• WTI crude futures steady above $104/bbl.\n• Rising US Inflation concerns pressure metals.", fill=TEXT_DARK, font=f_sub)
 
     # 15. TRADER INSIGHT
-    draw.rectangle([(515, 1740), (890, 2150)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(515, 1740), (890, 1775)], fill=NAVY)
-    draw.text((525, 1748), "15. TRADER INSIGHT", fill="#FFFFFF", font=f_head)
-    draw.text((525, 1800), "Markets witnessed selective buying with\ndefensive sectors outperforming.\n\nPharma and Media remained strong while\nMetals and PSU Banks stayed under pressure.\nTraders should focus on risk management.", fill=TEXT_DARK, font=f_sub)
+    draw.rectangle([(540, 1800), (920, 2220)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(540, 1800), (920, 1835)], fill=NAVY)
+    draw.text((550, 1808), "15. TRADER INSIGHT", fill="#FFFFFF", font=f_head)
+    draw.text((550, 1855), "Markets witnessed selective buying with\ndefensive sectors outperforming.\n\nPharma and Media remained strong while\nMetals and PSU Banks stayed under pressure.\nTraders should focus on risk management.", fill=TEXT_DARK, font=f_sub)
 
     # 16. ATR RANGE
-    draw.rectangle([(905, 1740), (1175, 2150)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
-    draw.rectangle([(905, 1740), (1175, 1775)], fill=NAVY)
-    draw.text((915, 1748), "16. ATR RANGE", fill="#FFFFFF", font=f_head)
-    draw.text((915, 1800), "Nifty 50:\nSupport: 23,400\nResistance: 23,900\n\nBank Nifty:\nSupport: 53,200\nResistance: 54,200", fill=TEXT_DARK, font=f_sub)
+    draw.rectangle([(940, 1800), (1275, 2220)], fill="#FFFFFF", outline=BORDER_CLR, width=2)
+    draw.rectangle([(940, 1800), (1275, 1835)], fill=NAVY)
+    draw.text((950, 1808), "16. ATR RANGE", fill="#FFFFFF", font=f_head)
+    draw.text((950, 1855), "Nifty 50:\nSupport: 23,400\nResistance: 23,900\n\nBank Nifty:\nSupport: 53,200\nResistance: 54,200", fill=TEXT_DARK, font=f_sub)
 
-    # --- FOOTER BAR (SQUARE 17 DETACHED DISCLAIMER) ---
-    draw.rectangle([(0, 2830), (1200, 2950)], fill="#E3E5E8")
-    draw.text((40, 2860), "17. SEBI DISCLAIMER: Informational analytical matrix dashboard. Subject to change.\nArtharion Capital is not SEBI registered.", fill=TEXT_DARK, font=f_data)
+    # --- SEBI DISCLAIMER FOOTER ---
+    draw.rectangle([(0, 2980), (1300, 3100)], fill="#E3E5E8")
+    draw.text((40, 3010), "17. SEBI DISCLAIMER: Informational analytical matrix dashboard. Subject to change.\nArtharion Capital is not SEBI registered.", fill=TEXT_DARK, font=f_data)
 
     img_stream = io.BytesIO()
     img.save(img_stream, format='PNG')
@@ -274,14 +277,14 @@ def compile_massive_dashboard():
 
 @bot.message_handler(commands=['start', 'help'])
 def hi_message(msg):
-    bot.reply_to(msg, "📈 Complete 16-Panel Engine Live! Run /dashboard to generate.")
+    bot.reply_to(msg, "📈 High-Readability Engine is Live! Run /dashboard to generate your report.")
 
 @bot.message_handler(commands=['dashboard'])
 def push_dashboard(msg):
-    bot.send_message(msg.chat.id, "🔄 Fetching 16 separate data matrix modules... Rendering complete spreadsheet canvas.")
+    bot.send_message(msg.chat.id, "🔄 Connecting to data matrix modules... Rendering legible canvas sheets.")
     try:
         out_img = compile_massive_dashboard()
-        bot.send_photo(msg.chat.id, photo=out_img, caption="📊 *Artharion Capital | Complete 16-Panel Pro Dashboard*", parse_mode="Markdown")
+        bot.send_photo(msg.chat.id, photo=out_img, caption="📊 *Artharion Capital | Market Pro Dashboard*", parse_mode="Markdown")
     except Exception as e:
         bot.send_message(msg.chat.id, f"Error compiling grid canvas: {str(e)}")
 
