@@ -17,8 +17,8 @@ def run_web_server():
     app.run(host='0.0.0.0', port=8080)
 
 # --- YOUR TELEGRAM BOT CODE ---
-BOT_TOKEN =HTTP API:
-8793559199:AAHGpMK_IB7AIvcZeHptk_HmCQBYJkCpRzg
+BOT_TOKEN = "
+8793559199:AAHGpMK_IB7AIvcZeHptk_HmCQBYJkCpRzg"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 def get_live_data(ticker_symbol):
