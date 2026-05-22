@@ -1,3 +1,34 @@
+import threading
+from flask import Flask
+from telegram.ext import Updater, CommandHandler # or your specific bot library
+
+# 1. Setup Flask (The "Keep-Alive" Sidekick)
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is alive!"
+
+def run_web_server():
+    # Render expects the app to listen on port 10000 by default
+    app.run(host='0.0.0.0', port=10000)
+
+# 2. Your Existing Bot Logic
+def start_bot():
+    # This is where your existing bot.polling() or updater.start_polling() code lives
+    print("Bot is starting...")
+    # bot.polling() 
+
+# 3. Main Execution
+if __name__ == "__main__":
+    # Start the web server in a background thread
+    t = Thread(target=run_web_server)
+    t.daemon = True # This ensures the thread closes if the bot crashes
+    t.start()
+
+    # Start the bot logic in the main thread
+    start_bot()
+
 import io
 import os
 import datetime
